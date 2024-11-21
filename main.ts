@@ -1,11 +1,10 @@
 import { App, Notice, Plugin, PluginSettingTab, Setting, normalizePath, requestUrl } from 'obsidian';
-const Setlist = require('setlistfm-js')
+import * as Setlist from 'setlistfm-js'
 
 /**
  * Rate limit max. 2.0/second and max. 1440/DAY.
  * More can be requested if necessary.
  */
-const API_KEY = 'x0WWyjAZ5MzwvEOdzd6MF_nhquZ1wkNWr2j7'
 
 interface SetlistSettings {
 	username?: string
@@ -533,12 +532,12 @@ const DEFAULT_SETTINGS: SetlistSettings = {
 	apiKey: undefined,
 }
 
-async function fetchPage(username: string, page: number): Promise<SetlistAttended> {
+async function fetchPage(username: string, page: number, apiKey: string): Promise<SetlistAttended> {
 	console.debug(`https://api.setlist.fm/rest/1.0/user/${username}/attended?p=${page}`)
 	const res = await requestUrl({
 		url: `https://api.setlist.fm/rest/1.0/user/${username}/attended?p=${page}`,
 		headers: {
-			'X-Api-Key': API_KEY,
+			'X-Api-Key': apiKey,
 			Accept: 'application/json',
 			'Accept-Language': 'en',
 		}
@@ -551,22 +550,28 @@ export default class SetlistPlugin extends Plugin {
 	setlist: any;
 
 	async onload() {
-		this.setlist = new Setlist({
-			key: API_KEY,
-		})
-		await this.loadSettings();
-
 		this.addCommand({
 			id: 'sync',
 			name: 'Sync attended concerts',
 			callback: async () => {
+				await this.loadSettings();
 				if (!this.settings.username) {
 					new Notice('No username found')
+					return
 				}
+				if (!this.settings.apiKey) {
+					new Notice('No API key found')
+					return
+				}
+
+				this.setlist = new Setlist({
+					key: this.settings.apiKey,
+				})
+
 				const setlists: Concert[] = []
 				let page = 1
 				while (true) {
-					const concerts = await fetchPage(this.settings.username!, page++)
+					const concerts = await fetchPage(this.settings.username!, page++, this.settings.apiKey!)
 					setlists.push(...concerts.setlist)
 					if (concerts.setlist.length < concerts.itemsPerPage) {
 						break;
@@ -612,7 +617,6 @@ export default class SetlistPlugin extends Plugin {
 class SetlistSettingTab extends PluginSettingTab {
 	plugin: SetlistPlugin;
 	settings: any
-	displayInterval?: unknown
 
 	constructor(app: App, plugin: SetlistPlugin) {
 		super(app, plugin);
@@ -626,7 +630,7 @@ class SetlistSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-		.setName('Setlist API key')
+		.setName('setlist.fm API key')
 		.setDesc('Client API key')
 		.addText((component) => {
 			component.setValue(this.settings.apiKey ?? '')
@@ -637,7 +641,7 @@ class SetlistSettingTab extends PluginSettingTab {
 		})
 
 		new Setting(containerEl)
-			.setName('Setlist.fm Username')
+			.setName('setlist.fm Username')
 			.addText((component) => {
 				component.setValue(this.settings.username)
 				component.onChange(async (value) => {
