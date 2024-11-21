@@ -9,9 +9,11 @@ const API_KEY = 'x0WWyjAZ5MzwvEOdzd6MF_nhquZ1wkNWr2j7'
 
 interface SetlistSettings {
 	username?: string
+	apiKey?: string
 }
 
 /**
+ * ```
  * {
     "type": "setlists",
     "itemsPerPage": 20,
@@ -482,6 +484,7 @@ interface SetlistSettings {
         }
     ]
 }
+```
  */
 interface SetlistAttended {
 	itemsPerPage: number
@@ -526,7 +529,8 @@ interface Concert {
 }
 
 const DEFAULT_SETTINGS: SetlistSettings = {
-	username: undefined
+	username: undefined,
+	apiKey: undefined,
 }
 
 async function fetchPage(username: string, page: number): Promise<SetlistAttended> {
@@ -548,7 +552,7 @@ export default class SetlistPlugin extends Plugin {
 
 	async onload() {
 		this.setlist = new Setlist({
-			key: API_KEY
+			key: API_KEY,
 		})
 		await this.loadSettings();
 
@@ -620,6 +624,17 @@ class SetlistSettingTab extends PluginSettingTab {
 		this.settings = await this.plugin.loadData()
 
 		containerEl.empty();
+
+		new Setting(containerEl)
+		.setName('Setlist API key')
+		.setDesc('Client API key')
+		.addText((component) => {
+			component.setValue(this.settings.apiKey ?? '')
+			component.onChange(async (value) => {
+				this.settings.apiKey = value
+				await this.plugin.saveSettings(this.settings)
+			})
+		})
 
 		new Setting(containerEl)
 			.setName('Setlist.fm Username')
