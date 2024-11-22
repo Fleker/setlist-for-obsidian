@@ -1,8 +1,8 @@
 # Setlist for Obsidian
 
-This project uses the setlist.fm API to sync the concerts you've attended to a file in Obsidian with date-specific backlinks. This can help you keep track of movies you've seen as well as when you've seen them. It also adds a backlink for the city, if you want to keep track of cities you've been to.
+This project uses the setlist.fm API to sync the concerts you've attended to a file in Obsidian with date-specific backlinks. It also adds a backlink for the city, if you want to keep track of cities you've been to.
 
-You'll need to bring your own API key.
+You'll need to [bring your own API key](https://api.setlist.fm/docs/1.0/index.html).
 
 ## Example
 
