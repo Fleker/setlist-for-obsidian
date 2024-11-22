@@ -577,7 +577,7 @@ export default class SetlistPlugin extends Plugin {
 						break;
 					}
 				}
-				const filename = normalizePath('/Setlist Concerts Attended.md')
+				const filename = normalizePath('/Setlist.fm Concerts Attended.md')
 
 				const syncedContents = setlists.map(c => {
 					// go from 16-08-2024 to 2024-08-16
@@ -633,7 +633,7 @@ class SetlistSettingTab extends PluginSettingTab {
 		.setName('setlist.fm API key')
 		.setDesc('Client API key')
 		.addText((component) => {
-			component.setValue(this.settings.apiKey ?? '')
+			component.setValue(this.settings?.apiKey)
 			component.onChange(async (value) => {
 				this.settings.apiKey = value
 				await this.plugin.saveSettings(this.settings)
@@ -643,7 +643,7 @@ class SetlistSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName('setlist.fm Username')
 			.addText((component) => {
-				component.setValue(this.settings.username)
+				component.setValue(this.settings?.username)
 				component.onChange(async (value) => {
 					this.settings.username = value
 					await this.plugin.saveSettings(this.settings)

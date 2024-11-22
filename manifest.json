@@ -1,9 +1,9 @@
 {
 	"id": "setlist-fm-sync",
 	"name": "Setlist.fm Sync",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "1.4.16",
-	"description": "Syncs your Setlist.fm attended concerts to Obsidian.",
+	"description": "Syncs your setlist.fm attended concerts.",
 	"author": "Nick Felker",
 	"authorUrl": "https://felker.dev",
 	"isDesktopOnly": false
