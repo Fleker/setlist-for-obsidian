@@ -625,7 +625,7 @@ class SetlistSettingTab extends PluginSettingTab {
 
 	async display(): Promise<void> {
 		const {containerEl} = this;
-		this.settings = await this.plugin.loadSettings()
+		this.settings = await this.plugin.loadData() ?? DEFAULT_SETTINGS
 
 		containerEl.empty();
 
