@@ -1,5 +1,5 @@
 import { App, Notice, Plugin, PluginSettingTab, Setting, normalizePath, requestUrl } from 'obsidian';
-import * as Setlist from 'setlistfm-js'
+import Setlist from 'setlistfm-js'
 
 /**
  * Rate limit max. 2.0/second and max. 1440/DAY.
